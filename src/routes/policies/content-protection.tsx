@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { PolicySection } from '@/components/shared/policy-section'
 import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
@@ -9,13 +8,14 @@ import { useSettingsStore } from '@/store/settings-store'
 export default function ContentProtectionPage() {
   const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
-  const [dirty, setDirty] = useState(false)
+  const hasUnsavedChanges = useSettingsStore((s) => s.hasUnsavedChanges)
+  const saveChanges = useSettingsStore((s) => s.saveChanges)
+  const discardChanges = useSettingsStore((s) => s.discardChanges)
 
   const cp = settings.contentProtection
 
   const update = (path: string[], value: unknown) => {
     updateSettings(['contentProtection', ...path], value)
-    setDirty(true)
   }
 
   return (
@@ -110,12 +110,14 @@ export default function ContentProtectionPage() {
       </PolicySection>
 
       <SaveBar
-        show={dirty}
+        show={hasUnsavedChanges}
         onSave={() => {
-          setDirty(false)
+          saveChanges()
           toast.success('Content protection settings saved successfully')
         }}
-        onDiscard={() => setDirty(false)}
+        onDiscard={() => {
+          discardChanges()
+        }}
       />
     </div>
   )

@@ -196,10 +196,19 @@ export interface DashboardMetrics {
   userActivityTrend: { date: string; active: number; inactive: number }[]
 }
 
+export interface LifecycleSettings {
+  autoSuspendOnTermExpiry: boolean
+  termExpiryWarningDays: number
+  retainAuditDataAfterOffboarding: boolean
+  dataRetentionDays: number
+  allowSelfServiceReactivation: boolean
+}
+
 export interface OrgSettings {
   auth: AuthenticationSettings
   password: PasswordPolicy
   contentProtection: ContentProtectionSettings
   deviceSecurity: DeviceSecuritySettings
   audit: AuditSettings
+  lifecycle: LifecycleSettings
 }

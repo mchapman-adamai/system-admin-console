@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { PolicySection } from '@/components/shared/policy-section'
 import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
@@ -8,13 +7,14 @@ import { useSettingsStore } from '@/store/settings-store'
 export default function SSOPage() {
   const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
-  const [dirty, setDirty] = useState(false)
+  const hasUnsavedChanges = useSettingsStore((s) => s.hasUnsavedChanges)
+  const saveChanges = useSettingsStore((s) => s.saveChanges)
+  const discardChanges = useSettingsStore((s) => s.discardChanges)
 
   const auth = settings.auth
 
   const update = (path: string[], value: any) => {
     updateSettings(['auth', ...path], value)
-    setDirty(true)
   }
 
   return (
@@ -68,7 +68,7 @@ export default function SSOPage() {
           description="Allow users to sign in with email and password as a fallback"
           securityLevel="medium"
           value={true}
-          onChange={() => setDirty(true)}
+          onChange={() => {}}
         />
         <SettingRow
           type="toggle"
@@ -76,17 +76,19 @@ export default function SSOPage() {
           description="Allow users to stay signed in across browser sessions"
           securityLevel="medium"
           value={false}
-          onChange={() => setDirty(true)}
+          onChange={() => {}}
         />
       </PolicySection>
 
       <SaveBar
-        show={dirty}
+        show={hasUnsavedChanges}
         onSave={() => {
-          setDirty(false)
+          saveChanges()
           toast.success('SSO settings saved successfully')
         }}
-        onDiscard={() => setDirty(false)}
+        onDiscard={() => {
+          discardChanges()
+        }}
       />
     </div>
   )

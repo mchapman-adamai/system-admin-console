@@ -100,6 +100,13 @@ const defaultOrgSettings: OrgSettings = {
     },
     retentionDays: 365,
   },
+  lifecycle: {
+    autoSuspendOnTermExpiry: true,
+    termExpiryWarningDays: 30,
+    retainAuditDataAfterOffboarding: true,
+    dataRetentionDays: 365,
+    allowSelfServiceReactivation: false,
+  },
 }
 
 // ---------------------------------------------------------------------------
