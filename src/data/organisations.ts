@@ -20,3 +20,5 @@ export const organisations: Organisation[] = [
     status: 'active',
   },
 ]
+
+export const currentOrg = organisations.find(o => o.id === 'org-acme-001')!

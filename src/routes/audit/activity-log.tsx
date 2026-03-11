@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react'
 import { auditLogs } from '@/data/audit-logs'
-import { useOrgStore } from '@/store/org-store'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -43,22 +42,16 @@ function formatTimestamp(iso: string): string {
 }
 
 export default function ActivityLogPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
   const [searchQuery, setSearchQuery] = useState('')
   const [actionFilter, setActionFilter] = useState<string>('all')
 
-  const orgLogs = useMemo(
-    () => auditLogs.filter((log) => log.organisationId === orgId),
-    [orgId],
-  )
-
   const uniqueActions = useMemo(() => {
-    const actions = new Set(orgLogs.map((log) => log.action))
+    const actions = new Set(auditLogs.map((log) => log.action))
     return Array.from(actions).sort()
-  }, [orgLogs])
+  }, [])
 
   const filteredLogs = useMemo(() => {
-    return orgLogs.filter((log) => {
+    return auditLogs.filter((log) => {
       const matchesAction = actionFilter === 'all' || log.action === actionFilter
       const matchesSearch =
         searchQuery === '' ||
@@ -68,7 +61,7 @@ export default function ActivityLogPage() {
         ACTION_LABELS[log.action].toLowerCase().includes(searchQuery.toLowerCase())
       return matchesAction && matchesSearch
     })
-  }, [orgLogs, actionFilter, searchQuery])
+  }, [actionFilter, searchQuery])
 
   return (
     <div className="space-y-6">
@@ -111,7 +104,7 @@ export default function ActivityLogPage() {
       </div>
 
       <div className="text-sm text-muted-foreground">
-        Showing {filteredLogs.length} of {orgLogs.length} entries
+        Showing {filteredLogs.length} of {auditLogs.length} entries
       </div>
 
       <div className="rounded-lg border bg-card">

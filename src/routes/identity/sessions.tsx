@@ -3,19 +3,17 @@ import { PolicySection } from '@/components/shared/policy-section'
 import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
 import { toast } from 'sonner'
-import { useOrgStore } from '@/store/org-store'
 import { useSettingsStore } from '@/store/settings-store'
 
 export default function SessionsPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
-  const settings = useSettingsStore((s) => s.getSettings(orgId))
+  const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
   const [dirty, setDirty] = useState(false)
 
   const session = settings.auth.session
 
   const update = (path: string[], value: any) => {
-    updateSettings(orgId, ['auth', 'session', ...path], value)
+    updateSettings(['auth', 'session', ...path], value)
     setDirty(true)
   }
 

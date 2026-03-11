@@ -1,101 +1,111 @@
-import { useState } from 'react'
-import { organisations } from '@/data/organisations'
-import { useOrgStore } from '@/store/org-store'
+import { currentOrg } from '@/data/organisations'
+import { users } from '@/data/users'
+import { TENANT_ORG_ID } from '@/store/org-store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { PolicySection } from '@/components/shared/policy-section'
-import { SettingRow } from '@/components/shared/setting-row'
-import { SaveBar } from '@/components/shared/save-bar'
 import { StatusBadge } from '@/components/shared/status-badge'
-import { toast } from 'sonner'
-import { Building2, Users, Globe } from 'lucide-react'
+import { Building2, Users, Globe, Calendar, Briefcase } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import { useMemo } from 'react'
 
 export default function MultiOrgPage() {
-  const currentOrgId = useOrgStore((s) => s.currentOrgId)
-  const [allowOrgSwitching, setAllowOrgSwitching] = useState(true)
-  const [sharedIdentity, setSharedIdentity] = useState(false)
-  const [dirty, setDirty] = useState(false)
+  const orgUsers = useMemo(
+    () => users.filter((u) => u.organisationId === TENANT_ORG_ID),
+    []
+  )
+
+  const activeUsers = orgUsers.filter((u) => u.status === 'active').length
+  const suspendedUsers = orgUsers.filter((u) => u.status === 'suspended').length
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Multi-Org Configuration</h1>
-        <p className="text-muted-foreground">Manage organisations and cross-org settings</p>
+        <h1 className="text-2xl font-semibold tracking-tight">Subsidiary Management</h1>
+        <p className="text-muted-foreground">Organisation details and subsidiary overview</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {organisations.map((org) => (
-          <Card key={org.id} className={org.id === currentOrgId ? 'ring-2 ring-sky-500' : ''}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                  {org.name}
-                </CardTitle>
-                {org.id === currentOrgId && (
-                  <span className="rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-700 dark:bg-sky-900/30 dark:text-sky-400">
-                    Current
-                  </span>
-                )}
+      {/* Organisation Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5 text-muted-foreground" />
+              {currentOrg.name}
+            </CardTitle>
+            <StatusBadge status={currentOrg.status} />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex items-start gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                <Briefcase className="h-4 w-4 text-muted-foreground" />
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <Globe className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">{org.primaryRegion}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground">{org.userCount} users</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Created {formatDate(org.createdAt)}</span>
-                  <StatusBadge status={org.status} />
-                </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Industry</p>
+                <p className="text-sm font-medium">{currentOrg.industry}</p>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Primary Region</p>
+                <p className="text-sm font-medium">{currentOrg.primaryRegion}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Users</p>
+                <p className="text-sm font-medium">{currentOrg.userCount} total</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Created</p>
+                <p className="text-sm font-medium">{formatDate(currentOrg.createdAt)}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* User Summary */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <p className="text-3xl font-bold">{orgUsers.length}</p>
+              <p className="text-sm text-muted-foreground mt-1">Total Users</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{activeUsers}</p>
+              <p className="text-sm text-muted-foreground mt-1">Active Users</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{suspendedUsers}</p>
+              <p className="text-sm text-muted-foreground mt-1">Suspended Users</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
-      <PolicySection title="Cross-Organisation Settings" description="Configure how organisations interact with each other">
-        <SettingRow
-          type="toggle"
-          label="Allow Organisation Switching"
-          description="Allow users with access to multiple organisations to switch between them without re-authenticating"
-          securityLevel="medium"
-          value={allowOrgSwitching}
-          onChange={(v) => {
-            setAllowOrgSwitching(v)
-            setDirty(true)
-          }}
-        />
-        <SettingRow
-          type="toggle"
-          label="Shared Identity Across Organisations"
-          description="Use a single identity and credential set across all organisations for this user"
-          securityLevel="high"
-          value={sharedIdentity}
-          onChange={(v) => {
-            setSharedIdentity(v)
-            setDirty(true)
-          }}
-        />
-      </PolicySection>
-
-      <SaveBar
-        show={dirty}
-        onSave={() => {
-          setDirty(false)
-          toast.success('Multi-org settings saved successfully')
-        }}
-        onDiscard={() => {
-          setAllowOrgSwitching(true)
-          setSharedIdentity(false)
-          setDirty(false)
-        }}
-      />
     </div>
   )
 }

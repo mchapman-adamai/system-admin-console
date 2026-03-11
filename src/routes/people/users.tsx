@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import { Search, X } from 'lucide-react'
 import { users } from '@/data/users'
 import { roles } from '@/data/roles'
-import { useOrgStore } from '@/store/org-store'
+import { TENANT_ORG_ID } from '@/store/org-store'
 import { formatRelativeTime, roleDisplayName } from '@/lib/utils'
 import { StatusBadge } from '@/components/shared/status-badge'
 import { Input } from '@/components/ui/input'
@@ -138,7 +138,6 @@ function UserDetailDialog({
 }
 
 export default function UsersPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -146,8 +145,8 @@ export default function UsersPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const orgUsers = useMemo(
-    () => users.filter((u) => u.organisationId === orgId),
-    [orgId]
+    () => users.filter((u) => u.organisationId === TENANT_ORG_ID),
+    []
   )
 
   const filteredUsers = useMemo(() => {
@@ -268,7 +267,7 @@ export default function UsersPage() {
                   <p className="text-muted-foreground">
                     {hasActiveFilters
                       ? 'No users match the current filters.'
-                      : 'No users found for this organisation.'}
+                      : 'No users found.'}
                   </p>
                 </TableCell>
               </TableRow>

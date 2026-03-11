@@ -4,19 +4,17 @@ import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { useOrgStore } from '@/store/org-store'
 import { useSettingsStore } from '@/store/settings-store'
 
 export default function WatermarksPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
-  const settings = useSettingsStore((s) => s.getSettings(orgId))
+  const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
   const [dirty, setDirty] = useState(false)
 
   const wm = settings.contentProtection.watermark
 
   const update = (path: string[], value: unknown) => {
-    updateSettings(orgId, ['contentProtection', 'watermark', ...path], value)
+    updateSettings(['contentProtection', 'watermark', ...path], value)
     setDirty(true)
   }
 

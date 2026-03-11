@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Shield, Users, Lock } from 'lucide-react'
 import { roles } from '@/data/roles'
 import { users } from '@/data/users'
-import { useOrgStore } from '@/store/org-store'
+import { TENANT_ORG_ID } from '@/store/org-store'
 import {
   Card,
   CardHeader,
@@ -26,11 +26,9 @@ function formatRestriction(restriction: string): string {
 }
 
 export default function RolesPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
-
   const orgUsers = useMemo(
-    () => users.filter((u) => u.organisationId === orgId),
-    [orgId]
+    () => users.filter((u) => u.organisationId === TENANT_ORG_ID),
+    []
   )
 
   const rolesWithCounts = useMemo(

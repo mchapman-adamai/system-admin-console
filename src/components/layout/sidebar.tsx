@@ -30,7 +30,6 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebarStore } from "@/store/sidebar-store"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 
@@ -46,15 +45,6 @@ interface NavGroup {
 }
 
 const navGroups: NavGroup[] = [
-  {
-    label: "IDENTITY",
-    items: [
-      { label: "SSO & Login", path: "/identity/sso", icon: KeyRound },
-      { label: "MFA", path: "/identity/mfa", icon: ShieldCheck },
-      { label: "Password Policy", path: "/identity/password-policy", icon: Lock },
-      { label: "Sessions", path: "/identity/sessions", icon: Timer },
-    ],
-  },
   {
     label: "PEOPLE",
     items: [
@@ -79,6 +69,15 @@ const navGroups: NavGroup[] = [
       { label: "Device Security", path: "/policies/device-security", icon: Smartphone },
       { label: "Offline & App Data", path: "/policies/offline", icon: WifiOff },
       { label: "Meeting Controls", path: "/policies/meeting-controls", icon: Video },
+    ],
+  },
+  {
+    label: "IDENTITY",
+    items: [
+      { label: "SSO & Login", path: "/identity/sso", icon: KeyRound },
+      { label: "MFA", path: "/identity/mfa", icon: ShieldCheck },
+      { label: "Password Policy", path: "/identity/password-policy", icon: Lock },
+      { label: "Sessions", path: "/identity/sessions", icon: Timer },
     ],
   },
   {
@@ -227,7 +226,7 @@ export function Sidebar() {
       </div>
 
       {/* Scrollable navigation area */}
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         <nav className="flex flex-col gap-1 py-3">
           {/* Dashboard - always visible at top */}
           <div className="px-2">
@@ -247,7 +246,7 @@ export function Sidebar() {
             ))}
           </div>
         </nav>
-      </ScrollArea>
+      </div>
 
       {/* Bottom section - General Settings + collapse toggle */}
       <div className="shrink-0 border-t border-sidebar-border">

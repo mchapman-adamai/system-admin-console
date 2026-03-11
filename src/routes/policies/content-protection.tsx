@@ -4,19 +4,17 @@ import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { useOrgStore } from '@/store/org-store'
 import { useSettingsStore } from '@/store/settings-store'
 
 export default function ContentProtectionPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
-  const settings = useSettingsStore((s) => s.getSettings(orgId))
+  const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
   const [dirty, setDirty] = useState(false)
 
   const cp = settings.contentProtection
 
   const update = (path: string[], value: unknown) => {
-    updateSettings(orgId, ['contentProtection', ...path], value)
+    updateSettings(['contentProtection', ...path], value)
     setDirty(true)
   }
 

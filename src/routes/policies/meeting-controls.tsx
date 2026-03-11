@@ -3,12 +3,10 @@ import { PolicySection } from '@/components/shared/policy-section'
 import { SettingRow } from '@/components/shared/setting-row'
 import { SaveBar } from '@/components/shared/save-bar'
 import { toast } from 'sonner'
-import { useOrgStore } from '@/store/org-store'
 import { useSettingsStore } from '@/store/settings-store'
 
 export default function MeetingControlsPage() {
-  const orgId = useOrgStore((s) => s.currentOrgId)
-  const settings = useSettingsStore((s) => s.getSettings(orgId))
+  const settings = useSettingsStore((s) => s.getSettings())
   const updateSettings = useSettingsStore((s) => s.updateSettings)
   const [dirty, setDirty] = useState(false)
 
@@ -16,12 +14,12 @@ export default function MeetingControlsPage() {
   const docHandling = settings.deviceSecurity.documentHandling
 
   const updateMeeting = (path: string[], value: unknown) => {
-    updateSettings(orgId, ['deviceSecurity', 'meeting', ...path], value)
+    updateSettings(['deviceSecurity', 'meeting', ...path], value)
     setDirty(true)
   }
 
   const updateDocHandling = (path: string[], value: unknown) => {
-    updateSettings(orgId, ['deviceSecurity', 'documentHandling', ...path], value)
+    updateSettings(['deviceSecurity', 'documentHandling', ...path], value)
     setDirty(true)
   }
 

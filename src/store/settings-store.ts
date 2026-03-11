@@ -1,9 +1,10 @@
 import { create } from 'zustand'
 import type { OrgSettings } from '@/data/types'
+import { TENANT_ORG_ID } from '@/store/org-store'
 
 // ---------------------------------------------------------------------------
 // Default org settings -- sensible baselines matching the PRD.
-// These are used as the initial state for every organisation until overridden.
+// These are used as the initial state for the organisation until overridden.
 // ---------------------------------------------------------------------------
 
 const defaultOrgSettings: OrgSettings = {
@@ -138,20 +139,20 @@ function deepSet<T extends Record<string, unknown>>(
 // ---------------------------------------------------------------------------
 
 interface SettingsState {
-  /** Map of orgId -> current (possibly edited) settings. */
-  settingsMap: Record<string, OrgSettings>
+  /** Current (possibly edited) settings for the tenant org. */
+  settings: OrgSettings | null
 
-  /** Map of orgId -> last-saved snapshot (used to detect dirty state). */
-  savedMap: Record<string, OrgSettings>
+  /** Last-saved snapshot (used to detect dirty state). */
+  saved: OrgSettings | null
 
-  /** Whether any org's settings differ from their saved snapshot. */
+  /** Whether settings differ from their saved snapshot. */
   hasUnsavedChanges: boolean
 
-  /** Return the settings for a given org (creates from defaults if needed). */
-  getSettings: (orgId: string) => OrgSettings
+  /** Return the settings for the tenant org (creates from defaults if needed). */
+  getSettings: () => OrgSettings
 
-  /** Update a single nested value within an org's settings. */
-  updateSettings: (orgId: string, path: string[], value: unknown) => void
+  /** Update a single nested value within the tenant org's settings. */
+  updateSettings: (path: string[], value: unknown) => void
 
   /** Persist all current settings (simulated). */
   saveChanges: () => void
@@ -161,58 +162,51 @@ interface SettingsState {
 }
 
 function computeDirty(
-  settingsMap: Record<string, OrgSettings>,
-  savedMap: Record<string, OrgSettings>,
+  settings: OrgSettings | null,
+  saved: OrgSettings | null,
 ): boolean {
-  for (const orgId of Object.keys(settingsMap)) {
-    if (JSON.stringify(settingsMap[orgId]) !== JSON.stringify(savedMap[orgId])) {
-      return true
-    }
-  }
-  return false
+  if (!settings || !saved) return false
+  return JSON.stringify(settings) !== JSON.stringify(saved)
 }
 
 export const useSettingsStore = create<SettingsState>()((set, get) => ({
-  settingsMap: {},
-  savedMap: {},
+  settings: null,
+  saved: null,
   hasUnsavedChanges: false,
 
-  getSettings: (orgId: string) => {
-    const { settingsMap } = get()
-    if (settingsMap[orgId]) return settingsMap[orgId]
+  getSettings: () => {
+    const { settings } = get()
+    if (settings) return settings
 
     // Initialise from defaults
     const fresh = deepClone(defaultOrgSettings)
-    set((state) => ({
-      settingsMap: { ...state.settingsMap, [orgId]: fresh },
-      savedMap: { ...state.savedMap, [orgId]: deepClone(fresh) },
-    }))
+    set({
+      settings: fresh,
+      saved: deepClone(fresh),
+    })
     return fresh
   },
 
-  updateSettings: (orgId: string, path: string[], value: unknown) => {
-    const current = get().getSettings(orgId)
+  updateSettings: (path: string[], value: unknown) => {
+    const current = get().getSettings()
     const updated = deepSet(current as unknown as Record<string, unknown>, path, value) as unknown as OrgSettings
 
-    set((state) => {
-      const nextMap = { ...state.settingsMap, [orgId]: updated }
-      return {
-        settingsMap: nextMap,
-        hasUnsavedChanges: computeDirty(nextMap, state.savedMap),
-      }
-    })
+    set((state) => ({
+      settings: updated,
+      hasUnsavedChanges: computeDirty(updated, state.saved),
+    }))
   },
 
   saveChanges: () => {
     set((state) => ({
-      savedMap: deepClone(state.settingsMap),
+      saved: state.settings ? deepClone(state.settings) : null,
       hasUnsavedChanges: false,
     }))
   },
 
   discardChanges: () => {
     set((state) => ({
-      settingsMap: deepClone(state.savedMap),
+      settings: state.saved ? deepClone(state.saved) : null,
       hasUnsavedChanges: false,
     }))
   },
