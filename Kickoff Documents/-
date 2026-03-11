@@ -1,0 +1,505 @@
+
+Product Requirements Document (PRD)
+
+AI Tool to Generate Governance Platform Admin Console Prototype
+
+1. Product Overview
+
+Product Name
+
+Adam.ai Admin Console Prototype Generator
+
+Purpose
+
+The purpose of this product is to create an AI-generated interactive prototype of the administrative configuration console used to manage the governance platform.
+
+The prototype will demonstrate how administrators configure:
+	•	Identity and authentication policies
+	•	User lifecycle and governance roles
+	•	Organisation and multi-organisation access
+	•	Governance content protection rules
+	•	Device and application security controls
+	•	Audit logging and compliance policies
+	•	Platform integrations such as national identity systems
+
+This tool generates a functional prototype, not production software.
+
+The prototype allows stakeholders to validate:
+	•	Administrative UX
+	•	Configuration model
+	•	Security architecture
+	•	Governance workflows
+
+2. Problem Statement
+
+The governance platform includes numerous security, identity, and governance configuration capabilities across multiple initiatives.
+
+Currently these capabilities are documented separately, but there is no unified administrative control surface defined.
+
+Administrators need a single console where they can configure:
+	•	authentication policies
+	•	governance permissions
+	•	document protection
+	•	device behaviour
+	•	audit logging
+	•	multi-organisation identity
+
+The goal of this prototype is to demonstrate how these capabilities are configured in practice.
+
+3. Target Users
+
+Governance Administrator
+
+Responsible for configuring the platform for their organisation.
+
+Tasks include:
+	•	managing users
+	•	configuring governance permissions
+	•	controlling document security
+	•	managing device security
+
+Customer IT Administrator
+
+Responsible for enterprise security configuration.
+
+Tasks include:
+	•	configuring SSO
+	•	defining authentication policies
+	•	enforcing security policies
+
+Customer Success
+
+Supports onboarding and troubleshooting.
+
+Tasks include:
+	•	assisting user setup
+	•	validating configuration
+
+Compliance Officer
+
+Responsible for oversight and audit.
+
+Tasks include:
+	•	reviewing activity logs
+	•	validating governance controls
+
+4. Core Design Principles
+
+Policy-based configuration
+
+Administrators define policies which are enforced across the platform.
+
+Example:
+
+Printing restriction = enabled
+
+Applies across:
+	•	web application
+	•	mobile application
+	•	downloaded documents
+
+Governance-aware permissions
+
+Permissions are based on governance roles and forum participation rather than generic system roles.
+
+Examples:
+	•	director
+	•	governance professional
+	•	observer
+	•	system administrator
+
+Security by default
+
+Sensitive governance platforms require restrictive defaults and explicit enabling of risky behaviours.
+
+Auditability
+
+All configuration changes must be logged.
+
+5. Platform Capability Domains
+
+The admin console is structured around the following capability domains:
+	•	Identity & Authentication
+	•	Users & Roles
+	•	User Lifecycle
+	•	Organisations / Multi-organisation access
+	•	Governance Content Protection
+	•	Device & App Security
+	•	Audit & Compliance
+	•	Integrations
+
+6. Admin Console Navigation
+
+The admin console uses a left sidebar navigation structure.
+
+Example navigation:
+
+Dashboard
+
+Identity & Authentication
+Users & Roles
+User Lifecycle
+
+Organisations
+
+Governance Content Protection
+
+Device & App Security
+
+Audit & Compliance
+
+Integrations
+
+7. Identity & Authentication
+
+Administrators configure identity and authentication policies.
+
+Configuration areas
+
+Authentication methods
+	•	SSO enable / disable
+	•	MFA requirement
+	•	national identity authentication
+
+Password policy
+	•	password complexity
+	•	password expiry
+	•	password reuse restrictions
+
+Session security
+	•	session timeout
+	•	concurrent sessions
+	•	login retry limits
+
+Account recovery
+	•	password reset configuration
+	•	identity verification rules
+
+8. Users & Roles
+
+Administrators manage governance roles and permissions.
+
+Role model
+
+Predefined roles include:
+	•	Governance Professional
+	•	Director
+	•	Observer
+	•	System Administrator
+
+Role customization
+
+Administrators can:
+	•	modify permissions
+	•	clone roles
+	•	create custom governance roles
+
+Forum-level permissions
+
+Permissions may vary per governance forum:
+	•	board
+	•	committee
+	•	working group
+
+9. User Lifecycle Management
+
+Administrators manage user lifecycle.
+
+User creation
+
+Users can be created via:
+	•	CS onboarding
+	•	admin self-service
+	•	bulk import
+
+Lifecycle states
+	•	active
+	•	suspended
+	•	offboarded
+
+Term expiry
+
+User roles may automatically expire after a defined date.
+
+Partial role removal
+
+Users can be removed from one forum while remaining active in others.
+
+10. Multi-Organisation Access
+
+Users may belong to multiple organisations.
+
+Shared identity
+
+Users may have a shared identity across multiple organisations.
+
+Organisation switching
+
+Users choose which organisation context they access.
+
+Organisation security policies
+
+Each organisation may define its own:
+	•	authentication rules
+	•	password policy
+	•	access controls
+
+11. Governance Content Protection
+
+Administrators define how governance materials are protected.
+
+Document handling restrictions
+	•	disable document export
+	•	disable printing
+	•	disable copy/paste
+
+Annotation protection
+
+Prevent export of annotations.
+
+Sensitive governance content
+
+Additional protection may apply to:
+	•	confidential board materials
+	•	AI-generated governance insights
+
+12. Device & Application Security
+
+Administrators define device behaviour and application security.
+
+Device security policies
+	•	session timeout
+	•	biometric unlock
+	•	offline access limits
+
+Application data protection
+	•	restrict offline storage
+	•	purge cached data
+	•	control sync behaviour
+
+Meeting security
+
+Controls such as:
+	•	screen lock during meetings
+	•	inactivity lock behaviour
+
+Device registration
+
+Administrators may:
+	•	register trusted devices
+	•	restrict access to approved devices
+
+13. Audit & Compliance
+
+Administrators configure audit logging.
+
+Audit logging
+
+Track events such as:
+	•	authentication events
+	•	permission changes
+	•	configuration changes
+	•	document access
+
+Log access
+
+Log access is role-based.
+
+Log retention
+
+Administrators define log retention periods.
+
+Selective logging
+
+Logging may be disabled for specific users.
+
+14. Integrations
+
+External identity systems may be integrated.
+
+Example:
+
+National identity integration.
+
+Administrators configure integration settings and authentication behaviour.
+
+15. Admin Console Screen Map
+
+The prototype should generate approximately 20–30 screens.
+
+Dashboard
+
+Admin dashboard showing platform overview.
+
+Identity & Authentication
+
+Authentication overview
+SSO configuration
+MFA configuration
+Password policy
+Session security
+Account recovery
+Identity integration
+
+Users & Roles
+
+User directory
+Create/edit user
+Role management
+Role customization
+Forum permissions
+
+User Lifecycle
+
+Lifecycle management
+Offboarding configuration
+Term expiry settings
+
+Organisations
+
+Organisation settings
+Multi-organisation configuration
+Organisation switching
+
+Governance Content Protection
+
+Document protection
+Annotation protection
+Sensitive content protection
+
+Device & App Security
+
+Device security policies
+Offline access rules
+Application data policies
+Device registration
+
+Audit & Compliance
+
+Audit log viewer
+Logging configuration
+Log retention settings
+
+16. Interaction Flows
+
+Configure MFA policy
+
+Admin logs in
+Navigate to Identity & Authentication
+Select MFA configuration
+Enable MFA
+Save policy
+
+Configure document protection
+
+Admin navigates to Governance Content Protection
+Enable restrictions
+Save configuration
+
+Manage users
+
+Admin navigates to Users
+Create user
+Assign role
+Assign forum membership
+Save
+
+Configure device security
+
+Admin navigates to Device Security
+Configure session timeout
+Configure offline access
+Enable device registration
+
+17. Configuration Data Model
+
+Example simplified data model:
+
+Organization
+AuthenticationPolicy
+PasswordPolicy
+DeviceSecurityPolicy
+ContentProtectionPolicy
+AuditPolicy
+
+User
+Roles
+ForumMemberships
+Status
+
+Device
+RegistrationStatus
+UserId
+
+18. Prototype UI Components
+
+The AI prototype should generate reusable components.
+
+Tables
+
+User directory
+Role permission matrix
+Device list
+Audit logs
+
+Forms
+
+User creation
+Role configuration
+Policy settings
+
+Controls
+
+Toggle switches
+Dropdown selectors
+Permission checkboxes
+Policy sliders
+
+19. AI Prototype Generation Requirements
+
+The AI tool must generate:
+	•	Sidebar navigation
+	•	Configuration pages
+	•	Role management tables
+	•	Policy configuration panels
+	•	Audit log viewer
+	•	User lifecycle interface
+
+The interface should resemble modern SaaS admin consoles such as:
+	•	Okta
+	•	Atlassian
+	•	Notion admin panels
+
+20. AI Prototype Prompt Template
+
+Example prompt:
+
+Generate a SaaS admin console UI for a governance platform.
+
+The console manages identity policies, governance roles, user lifecycle, device security rules, content protection policies, and audit logging.
+
+The interface should include sidebar navigation, configuration panels, role management tables, policy toggles, and an audit log viewer.
+
+21. Acceptance Criteria
+
+The prototype is successful if it:
+	•	demonstrates the admin configuration architecture
+	•	includes all capability domains
+	•	supports governance role configuration
+	•	supports device security configuration
+	•	includes content protection controls
+	•	includes audit logging interface
+	•	demonstrates multi-organisation access configuration
+
+Final Outcome
+
+The AI tool will generate a fully navigable prototype admin console demonstrating how governance platform configuration works.
+
+The prototype allows stakeholders to validate:
+	•	administrative workflows
+	•	security policy configuration
+	•	governance permission models
+	•	compliance capabilities
+
+If you’d like, I can also produce one more thing that will dramatically improve the AI prototype output: a structured settings schema (basically the configuration JSON model) that the AI tool can use to generate the UI automatically.
+
