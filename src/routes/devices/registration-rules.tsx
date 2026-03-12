@@ -26,14 +26,6 @@ export default function RegistrationRulesPage() {
 
       <PolicySection title="Registration Policy" description="Control how new devices are registered and approved">
         <SettingRow
-          type="toggle"
-          label="Device Registration Required"
-          description="Users must register their devices before accessing the platform"
-          securityLevel="high"
-          value={registration.required}
-          onChange={(v) => update(['required'], v)}
-        />
-        <SettingRow
           type="number"
           label="Max Devices Per User"
           description="Maximum number of devices a single user can register"
@@ -46,7 +38,7 @@ export default function RegistrationRulesPage() {
         <SettingRow
           type="toggle"
           label="Auto-Approve New Devices"
-          description="Automatically approve new device registrations without admin review"
+          description="When enabled, new device registrations are automatically approved. When disabled, an administrator must manually approve each new device before it can access the platform."
           securityLevel="medium"
           value={registration.autoApproveNewDevices}
           onChange={(v) => update(['autoApproveNewDevices'], v)}

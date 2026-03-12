@@ -16,11 +16,7 @@ import RolesPage from '@/routes/people/roles'
 import LifecyclePage from '@/routes/people/lifecycle'
 import OrgSettingsPage from '@/routes/organisations/settings'
 import SecurityPoliciesPage from '@/routes/organisations/security-policies'
-import ContentProtectionPage from '@/routes/policies/content-protection'
-import WatermarksPage from '@/routes/policies/watermarks'
-import DeviceSecurityPage from '@/routes/policies/device-security'
-import OfflinePage from '@/routes/policies/offline'
-import MeetingControlsPage from '@/routes/policies/meeting-controls'
+// Policies routes removed — policy settings live inside Profiles
 import ProfilesPage from '@/routes/profiles/index'
 import ProfileDetailPage from '@/routes/profiles/profile-detail'
 import DeviceRegistryPage from '@/routes/devices/registry'
@@ -30,9 +26,6 @@ import LogSettingsPage from '@/routes/audit/log-settings'
 import IntegrationsOverviewPage from '@/routes/integrations/overview'
 import NationalIdentityPage from '@/routes/integrations/national-identity'
 import GeneralSettingsPage from '@/routes/settings/general'
-import CustomerAlertsPage from '@/routes/customer-alerts/index'
-import BotCommandCentrePage from '@/routes/bots/command-centre'
-import MinutesCommandCentrePage from '@/routes/minutes/command-centre'
 
 function App() {
   const theme = useThemeStore((s) => s.theme)
@@ -51,11 +44,6 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
-              {/* Customer Success */}
-              <Route path="/customer-alerts" element={<CustomerAlertsPage />} />
-              {/* Automation */}
-              <Route path="/bots/command-centre" element={<BotCommandCentrePage />} />
-              <Route path="/minutes/command-centre" element={<MinutesCommandCentrePage />} />
               {/* Identity */}
               <Route path="/identity/sso" element={<SSOPage />} />
               <Route path="/identity/mfa" element={<MFAPage />} />
@@ -65,19 +53,14 @@ function App() {
               <Route path="/people/users" element={<UsersPage />} />
               <Route path="/people/users/:id" element={<UserDetailPage />} />
               <Route path="/people/roles" element={<RolesPage />} />
-              <Route path="/people/lifecycle" element={<LifecyclePage />} />
+              {/* Lifecycle hidden for now */}
               {/* Organisations */}
               <Route path="/organisations/settings" element={<OrgSettingsPage />} />
               <Route path="/organisations/security-policies" element={<SecurityPoliciesPage />} />
               {/* Profiles */}
               <Route path="/profiles" element={<ProfilesPage />} />
               <Route path="/profiles/:id" element={<ProfileDetailPage />} />
-              {/* Policies */}
-              <Route path="/policies/content-protection" element={<ContentProtectionPage />} />
-              <Route path="/policies/watermarks" element={<WatermarksPage />} />
-              <Route path="/policies/device-security" element={<DeviceSecurityPage />} />
-              <Route path="/policies/offline" element={<OfflinePage />} />
-              <Route path="/policies/meeting-controls" element={<MeetingControlsPage />} />
+              {/* Policies removed — settings live inside Profiles */}
               {/* Devices */}
               <Route path="/devices/registry" element={<DeviceRegistryPage />} />
               <Route path="/devices/registration-rules" element={<RegistrationRulesPage />} />

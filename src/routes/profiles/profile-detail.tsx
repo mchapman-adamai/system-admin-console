@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Archive, ArchiveRestore } from 'lucide-react'
 import { toast } from 'sonner'
 import { PolicySection } from '@/components/shared/policy-section'
 import { SettingRow } from '@/components/shared/setting-row'
@@ -28,14 +28,16 @@ import type { OrgSettings } from '@/data/types'
 // Types
 // ---------------------------------------------------------------------------
 
-type Tab = 'content-protection' | 'watermarks' | 'device-security' | 'offline' | 'meeting-controls'
+type Tab = 'details' | 'content-protection' | 'watermarks' | 'device-security' | 'offline' | 'meeting-controls' | 'users'
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: 'details', label: 'Profile Details' },
   { id: 'content-protection', label: 'Content Protection' },
   { id: 'watermarks', label: 'Watermarks' },
   { id: 'device-security', label: 'Device Security' },
   { id: 'offline', label: 'Offline & App Data' },
   { id: 'meeting-controls', label: 'Meeting Controls' },
+  { id: 'users', label: 'Users' },
 ]
 
 // ---------------------------------------------------------------------------
@@ -78,11 +80,22 @@ export default function ProfileDetailPage() {
   const users = useUserStore((s) => s.users)
   const orgDefaults = useSettingsStore((s) => s.getSettings())
 
-  const [activeTab, setActiveTab] = useState<Tab>('content-protection')
+  const [activeTab, setActiveTab] = useState<Tab>('details')
   const [savedSnapshot, setSavedSnapshot] = useState<string>('')
   const [dirty, setDirty] = useState(false)
+  const [editName, setEditName] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [isArchived, setIsArchived] = useState(false)
+  const [nameInitialized, setNameInitialized] = useState(false)
 
   const profile = useMemo(() => profiles.find((p) => p.id === id) ?? null, [profiles, id])
+
+  // Initialize editable fields from profile
+  if (profile && !nameInitialized) {
+    setEditName(profile.name)
+    setEditDescription(profile.description)
+    setNameInitialized(true)
+  }
 
   // Track dirty state
   const currentSnapshot = JSON.stringify(profile?.settings ?? {})
@@ -119,7 +132,6 @@ export default function ProfileDetailPage() {
   }
 
   const handleDiscard = () => {
-    // For prototype, just reset dirty flag
     setDirty(false)
     setSavedSnapshot(currentSnapshot)
   }
@@ -153,9 +165,14 @@ export default function ProfileDetailPage() {
         Back to Profiles
       </Button>
 
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{profile.name}</h1>
-        <p className="text-muted-foreground">{profile.description}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-semibold tracking-tight">{profile.name}</h1>
+            {isArchived && <Badge variant="secondary">Archived</Badge>}
+          </div>
+          <p className="text-muted-foreground">{profile.description}</p>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -173,10 +190,83 @@ export default function ProfileDetailPage() {
               }`}
             >
               {tab.label}
+              {tab.id === 'users' && (
+                <span className="ml-1.5 text-xs text-muted-foreground">({assignedUsers.length})</span>
+              )}
             </button>
           ))}
         </div>
       </div>
+
+      {/* Profile Details */}
+      {activeTab === 'details' && (
+        <div className="space-y-6">
+          <div className="rounded-lg border bg-card p-6 space-y-5">
+            <div>
+              <label className="text-sm font-medium mb-1.5 block">Profile Name</label>
+              <Input
+                value={editName}
+                onChange={(e) => {
+                  setEditName(e.target.value)
+                  setDirty(true)
+                }}
+                className="max-w-md"
+                placeholder="e.g. Default Governance Profile"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1.5 block">Description</label>
+              <Input
+                value={editDescription}
+                onChange={(e) => {
+                  setEditDescription(e.target.value)
+                  setDirty(true)
+                }}
+                className="max-w-lg"
+                placeholder="e.g. Default profile for governance professionals and system administrators"
+              />
+            </div>
+            <div className="pt-2 border-t">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium">Archive Profile</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {isArchived
+                      ? 'This profile is archived. Restore it to assign users again.'
+                      : 'Archiving a profile will unassign all users. This can be reversed.'}
+                  </p>
+                </div>
+                <Button
+                  variant={isArchived ? 'outline' : 'destructive'}
+                  size="sm"
+                  onClick={() => {
+                    setIsArchived(!isArchived)
+                    toast.success(isArchived ? 'Profile restored' : 'Profile archived')
+                  }}
+                  disabled={!isArchived && assignedUsers.length > 0}
+                >
+                  {isArchived ? (
+                    <>
+                      <ArchiveRestore className="h-3.5 w-3.5 mr-1.5" />
+                      Restore Profile
+                    </>
+                  ) : (
+                    <>
+                      <Archive className="h-3.5 w-3.5 mr-1.5" />
+                      Archive Profile
+                    </>
+                  )}
+                </Button>
+              </div>
+              {!isArchived && assignedUsers.length > 0 && (
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                  Cannot archive a profile with {assignedUsers.length} assigned user{assignedUsers.length !== 1 ? 's' : ''}. Remove all users first.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Content Protection */}
       {activeTab === 'content-protection' && (
@@ -275,58 +365,60 @@ export default function ProfileDetailPage() {
         </div>
       )}
 
-      {/* Assigned Users */}
-      <div className="rounded-lg border bg-card">
-        <div className="border-b px-6 py-4">
-          <h3 className="text-base font-semibold">Assigned Users</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {assignedUsers.length} user{assignedUsers.length !== 1 ? 's' : ''} assigned to this profile
-          </p>
-        </div>
-        {assignedUsers.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
-            No users assigned to this profile
+      {/* Users */}
+      {activeTab === 'users' && (
+        <div className="rounded-lg border bg-card">
+          <div className="border-b px-6 py-4">
+            <h3 className="text-base font-semibold">Assigned Users</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {assignedUsers.length} user{assignedUsers.length !== 1 ? 's' : ''} assigned to this profile
+            </p>
           </div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {assignedUsers.map((user) => (
-                <TableRow
-                  key={user.id}
-                  className="cursor-pointer"
-                  onClick={() => navigate(`/people/users/${user.id}`)}
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar size="sm">
-                        <AvatarFallback>
-                          {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">
-                        {user.firstName} {user.lastName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                  <TableCell>{roleDisplayName(user.role)}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={user.status} />
-                  </TableCell>
+          {assignedUsers.length === 0 ? (
+            <div className="py-8 text-center text-muted-foreground">
+              No users assigned to this profile
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </div>
+              </TableHeader>
+              <TableBody>
+                {assignedUsers.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    className="cursor-pointer"
+                    onClick={() => navigate(`/people/users/${user.id}`)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar size="sm">
+                          <AvatarFallback>
+                            {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">
+                          {user.firstName} {user.lastName}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                    <TableCell>{roleDisplayName(user.role)}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={user.status} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+      )}
 
       <SaveBar
         show={dirty}

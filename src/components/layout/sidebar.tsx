@@ -8,28 +8,18 @@ import {
   Timer,
   Users,
   UserCog,
-  UserMinus,
   Building2,
   Shield,
   Layers,
-  FileText,
-  Droplets,
-  Smartphone,
-  WifiOff,
-  Video,
   Laptop,
   ClipboardCheck,
   Activity,
   Settings2,
   Puzzle,
-  Fingerprint,
   Settings,
   ChevronDown,
   PanelLeftClose,
   PanelLeft,
-  HeartHandshake,
-  Bot,
-  FileCheck,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebarStore } from "@/store/sidebar-store"
@@ -49,24 +39,10 @@ interface NavGroup {
 
 const navGroups: NavGroup[] = [
   {
-    label: "CUSTOMER SUCCESS",
-    items: [
-      { label: "Customer Alerts", path: "/customer-alerts", icon: HeartHandshake },
-    ],
-  },
-  {
-    label: "AUTOMATION",
-    items: [
-      { label: "Bot Command Centre", path: "/bots/command-centre", icon: Bot },
-      { label: "Minutes Processing", path: "/minutes/command-centre", icon: FileCheck },
-    ],
-  },
-  {
     label: "PEOPLE",
     items: [
       { label: "Users", path: "/people/users", icon: Users },
       { label: "Roles & Permissions", path: "/people/roles", icon: UserCog },
-      { label: "Lifecycle & Offboarding", path: "/people/lifecycle", icon: UserMinus },
     ],
   },
   {
@@ -80,16 +56,6 @@ const navGroups: NavGroup[] = [
     label: "PROFILES",
     items: [
       { label: "Profiles", path: "/profiles", icon: Layers },
-    ],
-  },
-  {
-    label: "POLICIES",
-    items: [
-      { label: "Content Protection", path: "/policies/content-protection", icon: FileText },
-      { label: "Watermarks", path: "/policies/watermarks", icon: Droplets },
-      { label: "Device Security", path: "/policies/device-security", icon: Smartphone },
-      { label: "Offline & App Data", path: "/policies/offline", icon: WifiOff },
-      { label: "Meeting Controls", path: "/policies/meeting-controls", icon: Video },
     ],
   },
   {
@@ -118,8 +84,7 @@ const navGroups: NavGroup[] = [
   {
     label: "INTEGRATIONS",
     items: [
-      { label: "Overview", path: "/integrations/overview", icon: Puzzle },
-      { label: "National Identity", path: "/integrations/national-identity", icon: Fingerprint },
+      { label: "Integrations", path: "/integrations/overview", icon: Puzzle },
     ],
   },
 ]
