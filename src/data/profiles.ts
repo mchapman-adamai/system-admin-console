@@ -1,0 +1,115 @@
+import type { Profile } from './types'
+
+export const profiles: Profile[] = [
+  {
+    id: 'prof-001',
+    name: 'Standard Users',
+    description: 'Default profile for governance professionals and system administrators',
+    organisationId: 'org-acme-001',
+    createdAt: '2024-06-15T09:00:00Z',
+    settings: {
+      contentProtection: {
+        documentExport: false,
+        printing: true,
+        copyPaste: false,
+        annotationExport: true,
+        disableAnnotations: false,
+        watermark: {
+          enabled: true,
+          text: 'CONFIDENTIAL',
+          includeUserName: true,
+          includeDate: true,
+          includeOrgName: true,
+          opacity: 15,
+          placement: 'diagonal',
+        },
+        sensitiveContent: {
+          fieldLevelProtection: true,
+          protectedFields: ['financial_projections', 'compensation_details'],
+        },
+      },
+      deviceSecurity: {
+        registration: { required: true, maxDevicesPerUser: 3, autoApproveNewDevices: false },
+        session: { autoSignOutMinutes: 15, doNotSignOutDuringMeeting: true, biometricUnlock: true, rememberSignOn: false },
+        offline: { enabled: true, maxDurationDays: 7, purgeOnLogout: true, syncIntervalMinutes: 30 },
+        localData: { encrypted: true, deleteOnSignOut: false },
+        meeting: { inMeetingLockMinutes: 5, gracePeriodMinutes: 3, screenOverlayDetection: true },
+        documentHandling: { exportPasswordRequired: true, allowCopyPasteOut: false, allowCopyPasteIn: true, allowRsvpUpdates: true },
+      },
+    },
+  },
+  {
+    id: 'prof-002',
+    name: 'Board Directors',
+    description: 'Enhanced security profile for board directors with strict content controls',
+    organisationId: 'org-acme-001',
+    createdAt: '2024-06-15T09:05:00Z',
+    settings: {
+      contentProtection: {
+        documentExport: false,
+        printing: false,
+        copyPaste: false,
+        annotationExport: false,
+        disableAnnotations: false,
+        watermark: {
+          enabled: true,
+          text: 'BOARD CONFIDENTIAL',
+          includeUserName: true,
+          includeDate: true,
+          includeOrgName: true,
+          opacity: 20,
+          placement: 'diagonal',
+        },
+        sensitiveContent: {
+          fieldLevelProtection: true,
+          protectedFields: ['financial_projections', 'compensation_details', 'acquisition_targets', 'legal_opinions'],
+        },
+      },
+      deviceSecurity: {
+        registration: { required: true, maxDevicesPerUser: 2, autoApproveNewDevices: false },
+        session: { autoSignOutMinutes: 10, doNotSignOutDuringMeeting: true, biometricUnlock: true, rememberSignOn: false },
+        offline: { enabled: true, maxDurationDays: 3, purgeOnLogout: true, syncIntervalMinutes: 15 },
+        localData: { encrypted: true, deleteOnSignOut: true },
+        meeting: { inMeetingLockMinutes: 3, gracePeriodMinutes: 2, screenOverlayDetection: true },
+        documentHandling: { exportPasswordRequired: true, allowCopyPasteOut: false, allowCopyPasteIn: false, allowRsvpUpdates: true },
+      },
+    },
+  },
+  {
+    id: 'prof-003',
+    name: 'Observers',
+    description: 'Read-only profile with limited offline access for observers',
+    organisationId: 'org-acme-001',
+    createdAt: '2024-07-01T10:00:00Z',
+    settings: {
+      contentProtection: {
+        documentExport: false,
+        printing: false,
+        copyPaste: false,
+        annotationExport: false,
+        disableAnnotations: true,
+        watermark: {
+          enabled: true,
+          text: 'READ ONLY',
+          includeUserName: true,
+          includeDate: true,
+          includeOrgName: true,
+          opacity: 25,
+          placement: 'diagonal',
+        },
+        sensitiveContent: {
+          fieldLevelProtection: true,
+          protectedFields: ['financial_projections', 'compensation_details', 'acquisition_targets', 'legal_opinions'],
+        },
+      },
+      deviceSecurity: {
+        registration: { required: true, maxDevicesPerUser: 1, autoApproveNewDevices: false },
+        session: { autoSignOutMinutes: 5, doNotSignOutDuringMeeting: true, biometricUnlock: true, rememberSignOn: false },
+        offline: { enabled: false, maxDurationDays: 1, purgeOnLogout: true, syncIntervalMinutes: 15 },
+        localData: { encrypted: true, deleteOnSignOut: true },
+        meeting: { inMeetingLockMinutes: 3, gracePeriodMinutes: 1, screenOverlayDetection: true },
+        documentHandling: { exportPasswordRequired: true, allowCopyPasteOut: false, allowCopyPasteIn: false, allowRsvpUpdates: false },
+      },
+    },
+  },
+]

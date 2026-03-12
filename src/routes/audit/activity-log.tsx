@@ -35,6 +35,8 @@ const ACTION_LABELS: Record<AuditAction, string> = {
   device_deactivated: 'Device Deactivated',
   config_changed: 'Config Changed',
   export_attempted: 'Export Attempted',
+  password_reset_requested: 'Password Reset Requested',
+  profile_assigned: 'Profile Assigned',
 }
 
 function formatTimestamp(iso: string): string {
@@ -80,7 +82,7 @@ export default function ActivityLogPage() {
             className="pl-9"
           />
         </div>
-        <Select value={actionFilter} onValueChange={setActionFilter}>
+        <Select value={actionFilter} onValueChange={(value: string | null) => value && setActionFilter(value)}>
           <SelectTrigger className="w-[220px]">
             <SelectValue placeholder="Filter by action" />
           </SelectTrigger>

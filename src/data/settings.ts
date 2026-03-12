@@ -103,6 +103,13 @@ export const orgSettings: Record<string, OrgSettings> = {
       },
       retentionDays: 730,
     },
+    lifecycle: {
+      autoSuspendOnTermExpiry: true,
+      termExpiryWarningDays: 30,
+      retainAuditDataAfterOffboarding: true,
+      dataRetentionDays: 365,
+      allowSelfServiceReactivation: false,
+    },
   },
 
   'org-northbridge-001': {
@@ -201,6 +208,13 @@ export const orgSettings: Record<string, OrgSettings> = {
         meetingParticipation: false,
       },
       retentionDays: 365,
+    },
+    lifecycle: {
+      autoSuspendOnTermExpiry: false,
+      termExpiryWarningDays: 14,
+      retainAuditDataAfterOffboarding: true,
+      dataRetentionDays: 180,
+      allowSelfServiceReactivation: true,
     },
   },
 }

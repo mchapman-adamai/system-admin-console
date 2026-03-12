@@ -13,6 +13,8 @@ export const users: User[] = [
     createdAt: '2024-06-15T09:15:00Z',
     mfaEnabled: true,
     devices: ['dev-001'],
+    individualId: 'IND-001',
+    profileId: 'prof-001',
   },
   {
     id: 'usr-002',
@@ -27,6 +29,8 @@ export const users: User[] = [
     mfaEnabled: true,
     devices: ['dev-002'],
     termExpiryDate: '2027-06-30',
+    individualId: 'IND-002',
+    profileId: 'prof-002',
   },
   {
     id: 'usr-003',
@@ -41,6 +45,8 @@ export const users: User[] = [
     mfaEnabled: true,
     devices: ['dev-003'],
     termExpiryDate: '2028-03-15',
+    individualId: 'IND-003',
+    profileId: 'prof-002',
   },
   {
     id: 'usr-004',
@@ -54,6 +60,8 @@ export const users: User[] = [
     createdAt: '2024-06-15T09:10:00Z',
     mfaEnabled: true,
     devices: [],
+    individualId: 'IND-004',
+    profileId: 'prof-001',
   },
   {
     id: 'usr-005',
@@ -67,6 +75,7 @@ export const users: User[] = [
     createdAt: '2025-01-22T15:00:00Z',
     mfaEnabled: true,
     devices: ['dev-004'],
+    individualId: 'IND-005',
   },
   {
     id: 'usr-006',
@@ -81,6 +90,7 @@ export const users: User[] = [
     mfaEnabled: true,
     devices: [],
     termExpiryDate: '2028-12-31',
+    individualId: 'IND-006',
   },
   {
     id: 'usr-007',
@@ -94,5 +104,6 @@ export const users: User[] = [
     createdAt: '2025-03-01T08:00:00Z',
     mfaEnabled: false,
     devices: [],
+    individualId: 'IND-007',
   },
 ]

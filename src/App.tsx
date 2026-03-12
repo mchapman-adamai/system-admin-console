@@ -11,16 +11,18 @@ import MFAPage from '@/routes/identity/mfa'
 import PasswordPolicyPage from '@/routes/identity/password-policy'
 import SessionsPage from '@/routes/identity/sessions'
 import UsersPage from '@/routes/people/users'
+import UserDetailPage from '@/routes/people/user-detail'
 import RolesPage from '@/routes/people/roles'
 import LifecyclePage from '@/routes/people/lifecycle'
 import OrgSettingsPage from '@/routes/organisations/settings'
-import MultiOrgPage from '@/routes/organisations/multi-org'
 import SecurityPoliciesPage from '@/routes/organisations/security-policies'
 import ContentProtectionPage from '@/routes/policies/content-protection'
 import WatermarksPage from '@/routes/policies/watermarks'
 import DeviceSecurityPage from '@/routes/policies/device-security'
 import OfflinePage from '@/routes/policies/offline'
 import MeetingControlsPage from '@/routes/policies/meeting-controls'
+import ProfilesPage from '@/routes/profiles/index'
+import ProfileDetailPage from '@/routes/profiles/profile-detail'
 import DeviceRegistryPage from '@/routes/devices/registry'
 import RegistrationRulesPage from '@/routes/devices/registration-rules'
 import ActivityLogPage from '@/routes/audit/activity-log'
@@ -53,12 +55,15 @@ function App() {
               <Route path="/identity/sessions" element={<SessionsPage />} />
               {/* People */}
               <Route path="/people/users" element={<UsersPage />} />
+              <Route path="/people/users/:id" element={<UserDetailPage />} />
               <Route path="/people/roles" element={<RolesPage />} />
               <Route path="/people/lifecycle" element={<LifecyclePage />} />
               {/* Organisations */}
               <Route path="/organisations/settings" element={<OrgSettingsPage />} />
-              <Route path="/organisations/multi-org" element={<MultiOrgPage />} />
               <Route path="/organisations/security-policies" element={<SecurityPoliciesPage />} />
+              {/* Profiles */}
+              <Route path="/profiles" element={<ProfilesPage />} />
+              <Route path="/profiles/:id" element={<ProfileDetailPage />} />
               {/* Policies */}
               <Route path="/policies/content-protection" element={<ContentProtectionPage />} />
               <Route path="/policies/watermarks" element={<WatermarksPage />} />

@@ -23,6 +23,8 @@ export interface User {
   mfaEnabled: boolean
   devices: string[]
   termExpiryDate?: string
+  individualId?: string
+  profileId?: string
 }
 
 export interface Role {
@@ -148,6 +150,7 @@ export type AuditAction =
   | 'role_modified' | 'permission_changed'
   | 'device_registered' | 'device_deactivated'
   | 'config_changed' | 'export_attempted'
+  | 'password_reset_requested' | 'profile_assigned'
 
 export interface AuditLogEntry {
   id: string
@@ -183,6 +186,55 @@ export interface NotificationItem {
   severity: 'info' | 'warning' | 'critical'
 }
 
+export type AlertPriority = 'critical' | 'warning' | 'info'
+
+export interface DashboardAlert {
+  id: string
+  priority: AlertPriority
+  title: string
+  description: string
+  affectedEntity: string
+  actionLabel: string
+  actionPath: string
+  timestamp: string
+}
+
+export interface AttentionItem {
+  id: string
+  priority: AlertPriority
+  title: string
+  description: string
+  count: number
+  actionLabel: string
+  actionPath: string
+}
+
+export interface RecommendedAction {
+  id: string
+  label: string
+  path: string
+  count: number
+  priority: AlertPriority
+}
+
+export interface SecurityHealthWidget {
+  id: string
+  label: string
+  value: number
+  maxValue: number
+  unit: '%' | 'count'
+  status: 'good' | 'warning' | 'critical'
+  recommendation?: string
+}
+
+export interface GovernanceInsight {
+  id: string
+  description: string
+  count: number
+  actionLabel: string
+  actionPath: string
+}
+
 export interface DashboardMetrics {
   totalUsers: number
   activeDirectors: number
@@ -192,8 +244,17 @@ export interface DashboardMetrics {
   securityAlertsThisWeek: number
   securityPostureScore: number
   compliancePercentage: number
-  loginTrend: { date: string; count: number }[]
+  mfaCoverage: number
+  deviceTrustPercentage: number
+  authFailuresThisWeek: number
+  inactiveAccounts: number
+  loginTrend: { date: string; count: number; failed: number; newDevices: number }[]
   userActivityTrend: { date: string; active: number; inactive: number }[]
+  alerts: DashboardAlert[]
+  attentionItems: AttentionItem[]
+  recommendedActions: RecommendedAction[]
+  securityHealth: SecurityHealthWidget[]
+  governanceInsights: GovernanceInsight[]
 }
 
 export interface LifecycleSettings {
@@ -202,6 +263,15 @@ export interface LifecycleSettings {
   retainAuditDataAfterOffboarding: boolean
   dataRetentionDays: number
   allowSelfServiceReactivation: boolean
+}
+
+export interface Profile {
+  id: string
+  name: string
+  description: string
+  organisationId: string
+  createdAt: string
+  settings: Partial<OrgSettings>
 }
 
 export interface OrgSettings {

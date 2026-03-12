@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Search,
   X,
@@ -249,297 +250,6 @@ function AddUserDialog({
 }
 
 // ---------------------------------------------------------------------------
-// Edit User Dialog
-// ---------------------------------------------------------------------------
-
-function EditUserDialog({
-  user,
-  open,
-  onOpenChange,
-}: {
-  user: User | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const updateUser = useUserStore((s) => s.updateUser)
-  const suspendUser = useUserStore((s) => s.suspendUser)
-  const reactivateUser = useUserStore((s) => s.reactivateUser)
-  const offboardUser = useUserStore((s) => s.offboardUser)
-  const addAuditEntry = useAuditStore((s) => s.addEntry)
-
-  const [editRole, setEditRole] = useState<RoleType | ''>('')
-  const [editMfa, setEditMfa] = useState<boolean>(false)
-  const [hasChanges, setHasChanges] = useState(false)
-
-  // Sync local state when user prop changes
-  const currentUserId = user?.id ?? ''
-  const [trackedId, setTrackedId] = useState('')
-  if (user && currentUserId !== trackedId) {
-    setTrackedId(currentUserId)
-    setEditRole(user.role)
-    setEditMfa(user.mfaEnabled)
-    setHasChanges(false)
-  }
-
-  if (!user) return null
-
-  const role = roles.find((r) => r.id === user.role)
-  const isOffboarded = user.status === 'offboarded'
-  const isSuspended = user.status === 'suspended'
-  const isActive = user.status === 'active'
-
-  const handleRoleChange = (value: string) => {
-    setEditRole(value as RoleType)
-    setHasChanges(value !== user.role || editMfa !== user.mfaEnabled)
-  }
-
-  const handleMfaChange = (value: boolean) => {
-    setEditMfa(value)
-    setHasChanges(editRole !== user.role || value !== user.mfaEnabled)
-  }
-
-  const handleSaveChanges = () => {
-    const updates: Partial<Omit<User, 'id'>> = {}
-    if (editRole !== user.role) updates.role = editRole as RoleType
-    if (editMfa !== user.mfaEnabled) updates.mfaEnabled = editMfa
-
-    updateUser(user.id, updates)
-
-    addAuditEntry({
-      userId: 'usr-004',
-      userName: 'Olivia Clarke',
-      action: 'role_modified',
-      objectType: 'user',
-      objectName: `${user.firstName} ${user.lastName}`,
-      details: `Updated user: ${Object.keys(updates).join(', ')}`,
-      organisationId: TENANT_ORG_ID,
-    })
-
-    toast.success('User updated successfully')
-    setHasChanges(false)
-  }
-
-  const handleSuspend = () => {
-    suspendUser(user.id)
-    addAuditEntry({
-      userId: 'usr-004',
-      userName: 'Olivia Clarke',
-      action: 'user_suspended',
-      objectType: 'user',
-      objectName: `${user.firstName} ${user.lastName}`,
-      details: `Suspended user ${user.firstName} ${user.lastName}`,
-      organisationId: TENANT_ORG_ID,
-    })
-    toast.success('User suspended')
-    onOpenChange(false)
-  }
-
-  const handleReactivate = () => {
-    reactivateUser(user.id)
-    addAuditEntry({
-      userId: 'usr-004',
-      userName: 'Olivia Clarke',
-      action: 'user_created',
-      objectType: 'user',
-      objectName: `${user.firstName} ${user.lastName}`,
-      details: `Reactivated user ${user.firstName} ${user.lastName}`,
-      organisationId: TENANT_ORG_ID,
-    })
-    toast.success('User reactivated')
-    onOpenChange(false)
-  }
-
-  const handleOffboard = () => {
-    offboardUser(user.id)
-    addAuditEntry({
-      userId: 'usr-004',
-      userName: 'Olivia Clarke',
-      action: 'user_offboarded',
-      objectType: 'user',
-      objectName: `${user.firstName} ${user.lastName}`,
-      details: `Offboarded user ${user.firstName} ${user.lastName}`,
-      organisationId: TENANT_ORG_ID,
-    })
-    toast.success('User offboarded')
-    onOpenChange(false)
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit User</DialogTitle>
-          <DialogDescription>
-            Account information for {user.firstName} {user.lastName}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          {/* Identity */}
-          <div className="flex items-center gap-3">
-            <Avatar size="lg">
-              <AvatarFallback>
-                {getInitials(user.firstName, user.lastName)}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-medium">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-            </div>
-          </div>
-
-          {/* Offboarded notice */}
-          {isOffboarded && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-400">
-              This user has been offboarded. Their account is read-only.
-            </div>
-          )}
-
-          {/* Editable Role */}
-          <div className="space-y-1.5">
-            <Label>Role</Label>
-            {isOffboarded ? (
-              <p className="text-sm font-medium">
-                {roleDisplayName(user.role)}
-              </p>
-            ) : (
-              <Select
-                value={editRole || user.role}
-                onValueChange={handleRoleChange}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="governance_professional">
-                    Governance Professional
-                  </SelectItem>
-                  <SelectItem value="director">Director</SelectItem>
-                  <SelectItem value="observer">Observer</SelectItem>
-                  <SelectItem value="system_administrator">
-                    System Administrator
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-
-          {/* Status + MFA Row */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <p className="text-muted-foreground">Status</p>
-              <div className="mt-0.5">
-                <StatusBadge status={user.status} />
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-1">MFA Enabled</p>
-              {isOffboarded ? (
-                <p className="font-medium">
-                  {user.mfaEnabled ? 'Yes' : 'No'}
-                </p>
-              ) : (
-                <Switch
-                  checked={editMfa}
-                  onCheckedChange={handleMfaChange}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Read-only info */}
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div>
-              <p className="text-muted-foreground">Devices</p>
-              <p className="font-medium">
-                {user.devices.length === 0
-                  ? 'None registered'
-                  : `${user.devices.length} registered`}
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Last Active</p>
-              <p className="font-medium">
-                {formatRelativeTime(user.lastActiveAt)}
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground">Created</p>
-              <p className="font-medium">
-                {formatRelativeTime(user.createdAt)}
-              </p>
-            </div>
-            {user.termExpiryDate && (
-              <div>
-                <p className="text-muted-foreground">Term Expiry</p>
-                <p className="font-medium">{user.termExpiryDate}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Permissions */}
-          {role && (
-            <div>
-              <p className="text-sm text-muted-foreground mb-1.5">
-                Permissions
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {role.permissions.map((perm) => (
-                  <Badge key={perm} variant="secondary" className="text-xs">
-                    {perm.replace(/_/g, ' ')}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <DialogFooter>
-          {/* Status action buttons */}
-          {isActive && (
-            <>
-              <Button variant="destructive" onClick={handleSuspend}>
-                <UserMinus className="mr-1.5 h-4 w-4" />
-                Suspend User
-              </Button>
-              {hasChanges && (
-                <Button onClick={handleSaveChanges}>Save Changes</Button>
-              )}
-              {!hasChanges && (
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                >
-                  Close
-                </Button>
-              )}
-            </>
-          )}
-          {isSuspended && (
-            <>
-              <Button variant="destructive" onClick={handleOffboard}>
-                Offboard
-              </Button>
-              <Button onClick={handleReactivate}>
-                <UserCheck className="mr-1.5 h-4 w-4" />
-                Reactivate
-              </Button>
-            </>
-          )}
-          {isOffboarded && (
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Close
-            </Button>
-          )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-// ---------------------------------------------------------------------------
 // Row Actions Dropdown
 // ---------------------------------------------------------------------------
 
@@ -637,12 +347,11 @@ function RowActionsDropdown({
 
 export default function UsersPage() {
   const users = useUserStore((s) => s.users)
+  const navigate = useNavigate()
 
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
 
   const filteredUsers = useMemo(() => {
@@ -678,15 +387,8 @@ export default function UsersPage() {
   }
 
   const handleRowClick = (user: User) => {
-    setSelectedUser(user)
-    setEditDialogOpen(true)
+    navigate(`/people/users/${user.id}`)
   }
-
-  // Keep selectedUser in sync with store (so dialog reflects status changes)
-  const syncedSelectedUser = useMemo(() => {
-    if (!selectedUser) return null
-    return users.find((u) => u.id === selectedUser.id) ?? null
-  }, [users, selectedUser])
 
   return (
     <div className="space-y-6">
@@ -717,7 +419,7 @@ export default function UsersPage() {
             className="pl-9"
           />
         </div>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
+        <Select value={roleFilter} onValueChange={(value: string | null) => value && setRoleFilter(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="All Roles" />
           </SelectTrigger>
@@ -733,7 +435,7 @@ export default function UsersPage() {
             </SelectItem>
           </SelectContent>
         </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value: string | null) => value && setStatusFilter(value)}>
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
@@ -825,13 +527,6 @@ export default function UsersPage() {
 
       {/* Add User Dialog */}
       <AddUserDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} />
-
-      {/* Edit User Dialog */}
-      <EditUserDialog
-        user={syncedSelectedUser}
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-      />
     </div>
   )
 }

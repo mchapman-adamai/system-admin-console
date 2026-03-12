@@ -10,8 +10,8 @@ import {
   UserCog,
   UserMinus,
   Building2,
-  GitBranch,
   Shield,
+  Layers,
   FileText,
   Droplets,
   Smartphone,
@@ -57,8 +57,13 @@ const navGroups: NavGroup[] = [
     label: "ORGANISATIONS",
     items: [
       { label: "Organisation Settings", path: "/organisations/settings", icon: Building2 },
-      { label: "Multi-Org Configuration", path: "/organisations/multi-org", icon: GitBranch },
       { label: "Security Policies", path: "/organisations/security-policies", icon: Shield },
+    ],
+  },
+  {
+    label: "PROFILES",
+    items: [
+      { label: "Profiles", path: "/profiles", icon: Layers },
     ],
   },
   {

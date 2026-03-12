@@ -97,7 +97,7 @@ export function SettingRow(props: SettingRowProps) {
           </div>
         )}
         {props.type === 'select' && (
-          <Select value={props.value} onValueChange={props.onChange}>
+          <Select value={props.value} onValueChange={(value: string | null) => value && props.onChange(value)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue />
             </SelectTrigger>
@@ -114,7 +114,7 @@ export function SettingRow(props: SettingRowProps) {
           <div className="flex items-center gap-3 w-[200px]">
             <Slider
               value={[props.value]}
-              onValueChange={([v]) => props.onChange(v)}
+              onValueChange={(values) => { const v = Array.isArray(values) ? values[0] : values; props.onChange(v); }}
               min={props.min}
               max={props.max}
               step={props.step ?? 1}

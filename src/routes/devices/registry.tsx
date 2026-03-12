@@ -57,7 +57,7 @@ export default function DeviceRegistryPage() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(value: string | null) => value && setStatusFilter(value)}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
