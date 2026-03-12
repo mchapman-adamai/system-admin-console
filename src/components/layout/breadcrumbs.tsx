@@ -33,6 +33,10 @@ const segmentLabels: Record<string, string> = {
   integrations: "Integrations",
   overview: "Overview",
   "national-identity": "National Identity",
+  "customer-alerts": "Customer Alerts",
+  bots: "Bots",
+  minutes: "Minutes",
+  "command-centre": "Command Centre",
 }
 
 function formatSegment(segment: string): string {

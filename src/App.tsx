@@ -30,6 +30,9 @@ import LogSettingsPage from '@/routes/audit/log-settings'
 import IntegrationsOverviewPage from '@/routes/integrations/overview'
 import NationalIdentityPage from '@/routes/integrations/national-identity'
 import GeneralSettingsPage from '@/routes/settings/general'
+import CustomerAlertsPage from '@/routes/customer-alerts/index'
+import BotCommandCentrePage from '@/routes/bots/command-centre'
+import MinutesCommandCentrePage from '@/routes/minutes/command-centre'
 
 function App() {
   const theme = useThemeStore((s) => s.theme)
@@ -48,6 +51,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              {/* Customer Success */}
+              <Route path="/customer-alerts" element={<CustomerAlertsPage />} />
+              {/* Automation */}
+              <Route path="/bots/command-centre" element={<BotCommandCentrePage />} />
+              <Route path="/minutes/command-centre" element={<MinutesCommandCentrePage />} />
               {/* Identity */}
               <Route path="/identity/sso" element={<SSOPage />} />
               <Route path="/identity/mfa" element={<MFAPage />} />

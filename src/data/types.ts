@@ -282,3 +282,119 @@ export interface OrgSettings {
   audit: AuditSettings
   lifecycle: LifecycleSettings
 }
+
+// ---------------------------------------------------------------------------
+// Customer Assistance Alerts
+// ---------------------------------------------------------------------------
+
+export type CustomerAlertType =
+  | 'account_locked'
+  | 'password_expiring'
+  | 'account_suspended'
+  | 'login_failures'
+  | 'inactive_director'
+  | 'device_pending'
+  | 'mfa_not_enabled'
+
+export interface CustomerAlert {
+  id: string
+  type: CustomerAlertType
+  severity: AlertPriority
+  title: string
+  description: string
+  affectedUser: string
+  affectedUserRole: RoleType
+  affectedUserId: string
+  organisationId: string
+  timestamp: string
+  actionLabel: string
+  actionPath: string
+  resolved: boolean
+}
+
+// ---------------------------------------------------------------------------
+// Bot Attendance
+// ---------------------------------------------------------------------------
+
+export type BotStatus = 'idle' | 'queued' | 'waiting_room' | 'in_call' | 'completed' | 'failed' | 'retrying'
+
+export interface BotInstance {
+  id: string
+  meetingId: string
+  meetingName: string
+  organisationId: string
+  status: BotStatus
+  assignedAt: string
+  joinedAt?: string
+  leftAt?: string
+  errorMessage?: string
+  duration?: number // seconds
+  retryCount: number
+}
+
+export interface BotMeeting {
+  id: string
+  name: string
+  organisationId: string
+  scheduledAt: string
+  platform: 'zoom' | 'teams' | 'webex' | 'google_meet'
+  botAssigned: boolean
+  botId?: string
+  status: 'upcoming' | 'in_progress' | 'completed' | 'cancelled'
+}
+
+export interface BotEvent {
+  id: string
+  botId: string
+  meetingName: string
+  event: 'assigned' | 'joined_waiting_room' | 'admitted' | 'recording' | 'left_call' | 'failed' | 'retry'
+  timestamp: string
+  details?: string
+}
+
+export interface BotMetrics {
+  totalActive: number
+  inWaitingRoom: number
+  inCalls: number
+  queued: number
+  failedToday: number
+  completedToday: number
+  successRate: number
+  avgWaitTime: number // seconds
+  avgCallDuration: number // minutes
+  botsIdle: number
+}
+
+// ---------------------------------------------------------------------------
+// Minutes Processing
+// ---------------------------------------------------------------------------
+
+export type MinutesStatus = 'queued' | 'processing' | 'completed' | 'failed' | 'reviewing'
+
+export interface MinutesJob {
+  id: string
+  meetingId: string
+  meetingName: string
+  organisationId: string
+  status: MinutesStatus
+  queuedAt: string
+  startedAt?: string
+  completedAt?: string
+  duration?: number // seconds to process
+  wordCount?: number
+  pageCount?: number
+  errorMessage?: string
+  qualityScore?: number // 0-100
+  retryCount: number
+}
+
+export interface MinutesMetrics {
+  generatedToday: number
+  processingNow: number
+  queued: number
+  failedToday: number
+  avgProcessingTime: number // seconds
+  successRate: number
+  avgQualityScore: number
+  totalProcessedThisWeek: number
+}

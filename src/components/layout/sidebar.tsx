@@ -27,6 +27,9 @@ import {
   ChevronDown,
   PanelLeftClose,
   PanelLeft,
+  HeartHandshake,
+  Bot,
+  FileCheck,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebarStore } from "@/store/sidebar-store"
@@ -45,6 +48,19 @@ interface NavGroup {
 }
 
 const navGroups: NavGroup[] = [
+  {
+    label: "CUSTOMER SUCCESS",
+    items: [
+      { label: "Customer Alerts", path: "/customer-alerts", icon: HeartHandshake },
+    ],
+  },
+  {
+    label: "AUTOMATION",
+    items: [
+      { label: "Bot Command Centre", path: "/bots/command-centre", icon: Bot },
+      { label: "Minutes Processing", path: "/minutes/command-centre", icon: FileCheck },
+    ],
+  },
   {
     label: "PEOPLE",
     items: [
